@@ -1,0 +1,130 @@
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class Employee {
+    private String name;
+    private int id;
+    private Map<String, Integer> attendance = new HashMap<>();
+    private int totalOvertimeHours = 0;
+
+    public Employee(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void markAttendance(String date, int hoursWorked) {
+        attendance.put(date, hoursWorked);
+    }
+
+    public Map<String, Integer> getAttendance() {
+        return attendance;
+    }
+
+    public void addOvertimeHours(int hours) {
+        totalOvertimeHours += hours;
+    }
+
+    public int getTotalOvertimeHours() {
+        return totalOvertimeHours;
+    }
+}
+
+class AttendanceTracker {
+    private Map<Integer, Employee> employees = new HashMap<>();
+    private Scanner scanner = new Scanner(System.in);
+
+    public void addEmployee() {
+        System.out.println("Enter employee name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Enter employee ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+
+        Employee employee = new Employee(name, id);
+        employees.put(id, employee);
+        System.out.println("Employee added - Name: " + name + ", ID: " + id);
+    }
+
+    public void markEmployeeAttendance() {
+        System.out.println("Enter employee ID: ");
+        int employeeId = Integer.parseInt(scanner.nextLine());
+
+        Employee employee = employees.get(employeeId);
+        if (employee == null) {
+            System.out.println("Employee with ID " + employeeId + " not found.");
+            return;
+        }
+
+        System.out.println("Enter date (DD/MM/YYYY): ");
+        String date = scanner.nextLine();
+
+        System.out.println("Enter hours worked: ");
+        int hoursWorked = Integer.parseInt(scanner.nextLine());
+
+        employee.markAttendance(date, hoursWorked);
+        System.out.println("Attendance marked for Employee ID " + employeeId + " on " + date);
+    }
+
+    public void generateEmployeeReport() {
+        System.out.println("Enter employee ID: ");
+        int employeeId = Integer.parseInt(scanner.nextLine());
+
+        Employee employee = employees.get(employeeId);
+        if (employee == null) {
+            System.out.println("Employee with ID " + employeeId + " not found.");
+            return;
+        }
+
+        System.out.println("Employee Report for ID " + employeeId + " - " + employee.getName());
+        System.out.println("Attendance:");
+        for (Map.Entry<String, Integer> entry : employee.getAttendance().entrySet()) {
+            System.out.println("Date: " + entry.getKey() + ", Hours Worked: " + entry.getValue());
+        }
+        System.out.println("Total Overtime Hours: " + employee.getTotalOvertimeHours());
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        AttendanceTracker attendanceTracker = new AttendanceTracker();
+        Scanner scanner = new Scanner(System.in);
+
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println("Employee Attendance Tracker System");
+            System.out.println("1. Add Employee");
+            System.out.println("2. Mark Employee Attendance");
+            System.out.println("3. Generate Employee Report");
+            System.out.println("0. Exit");
+            System.out.println("Enter your choice: ");
+            choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+                case 1:
+                    attendanceTracker.addEmployee();
+                    break;
+                case 2:
+                    attendanceTracker.markEmployeeAttendance();
+                    break;
+                case 3:
+                    attendanceTracker.generateEmployeeReport();
+                    break;
+                case 0:
+                    System.out.println("Exiting the Employee Attendance Tracker System. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
